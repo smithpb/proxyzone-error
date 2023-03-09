@@ -1,34 +1,38 @@
-import { fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, TestBed } from '@angular/core/testing';
 import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { render } from '@testing-library/angular';
 import { DummyModule } from '@harness-issue/dummy';
 import { DummyHarness } from '@harness-issue/dummy/testing';
 import { AppComponent } from './app.component';
-import { NxWelcomeComponent } from './nx-welcome.component';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
+  async function setup() {
+    const { fixture } = await render(AppComponent, {
       imports: [DummyModule],
-      declarations: [AppComponent, NxWelcomeComponent],
-    }).compileComponents();
-  });
+    });
 
-  it('should create the app', fakeAsync(async () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    return { fixture };
+  }
+
+  it('should load the harness with testing-library', fakeAsync(async () => {
+    const { fixture } = await setup();
     const loader = TestbedHarnessEnvironment.loader(fixture);
 
     const dummyHarness = await loader.getHarness(DummyHarness);
-
-    tick(1000);
 
     await expect(
       dummyHarness.matchesSelector('harness-issue-dummy')
     ).resolves.toBeTruthy();
   }));
 
-  it(`should have as title 'test-app'`, () => {
+  it(`should load the harness without testing library`, async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('test-app');
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+
+    const dummyHarness = await loader.getHarness(DummyHarness);
+
+    await expect(
+      dummyHarness.matchesSelector('harness-issue-dummy')
+    ).resolves.toBeTruthy();
   });
 });
