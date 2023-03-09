@@ -1,32 +1,32 @@
 import { TestBed } from '@angular/core/testing';
+import { TestbedHarnessEnvironment } from '@angular/cdk/testing/testbed';
+import { DummyModule } from '@harness-issue/dummy';
+import { DummyHarness } from '@harness-issue/dummy/testing';
 import { AppComponent } from './app.component';
 import { NxWelcomeComponent } from './nx-welcome.component';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      imports: [DummyModule],
       declarations: [AppComponent, NxWelcomeComponent],
     }).compileComponents();
   });
 
-  it('should create the app', () => {
+  it('should create the app', async () => {
     const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    const loader = TestbedHarnessEnvironment.loader(fixture);
+
+    const dummyHarness = await loader.getHarness(DummyHarness);
+
+    await expect(
+      dummyHarness.matchesSelector('harness-issue-dummy')
+    ).resolves.toBeTruthy();
   });
 
   it(`should have as title 'test-app'`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('test-app');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Welcome test-app'
-    );
   });
 });

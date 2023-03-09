@@ -14,7 +14,10 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@harness-issue/dummy": ["libs/dummy/src/index.ts"],
+      "@harness-issue/dummy/testing": ["libs/dummy/src/lib/test.ts"]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
